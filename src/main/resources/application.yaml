@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: code-samples
+  datasource:
+    url: jdbc:postgresql://localhost:5432/demo
+    username: demoadmin
+    password: nimda-pwd
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl: true
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
