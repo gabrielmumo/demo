@@ -1,6 +1,6 @@
 package dev.gabrielmumo.demo.config;
 
-import dev.gabrielmumo.demo.service.CustomUserDetailService;
+import dev.gabrielmumo.demo.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,10 +19,10 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final CustomUserDetailService userDetailService;
+    private final UserDetailServiceImpl userDetailService;
 
     @Autowired
-    public SecurityConfig(CustomUserDetailService userDetailService) {
+    public SecurityConfig(UserDetailServiceImpl userDetailService) {
         this.userDetailService = userDetailService;
     }
 
@@ -32,6 +32,7 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/api/v1/users/signup").permitAll();
+                    request.requestMatchers("/api/v1/authentication/login").permitAll();
                     request.anyRequest().authenticated();
                 })
                 .httpBasic(withDefaults());
