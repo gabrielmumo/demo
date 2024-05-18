@@ -1,5 +1,6 @@
 package dev.gabrielmumo.demo.config;
 
+import dev.gabrielmumo.demo.security.JwtEntryPoint;
 import dev.gabrielmumo.demo.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -9,6 +10,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -20,16 +22,20 @@ import static org.springframework.security.config.Customizer.withDefaults;
 public class SecurityConfig {
 
     private final UserDetailServiceImpl userDetailService;
+    private final JwtEntryPoint jwtEntryPoint;
 
     @Autowired
-    public SecurityConfig(UserDetailServiceImpl userDetailService) {
+    public SecurityConfig(UserDetailServiceImpl userDetailService, JwtEntryPoint jwtEntryPoint) {
         this.userDetailService = userDetailService;
+        this.jwtEntryPoint = jwtEntryPoint;
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(request -> request.authenticationEntryPoint(jwtEntryPoint))
+                .sessionManagement(request -> request.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> {
                     request.requestMatchers("/api/v1/users/signup").permitAll();
                     request.requestMatchers("/api/v1/authentication/login").permitAll();
