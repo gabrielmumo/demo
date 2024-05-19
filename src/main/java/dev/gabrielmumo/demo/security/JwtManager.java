@@ -50,6 +50,8 @@ public class JwtManager {
             errorMessage = "JWT token is unsupported: " + e.getMessage();
         } catch (IllegalArgumentException e) {
             errorMessage = "JWT claims string is empty: " + e.getMessage();
+        } catch (Exception e) {
+            errorMessage = "Unexpected exception: " + e.getMessage();
         }
         // TODO introduce custom exception
         System.err.println(errorMessage);

@@ -1,7 +1,7 @@
 package dev.gabrielmumo.demo.config;
 
+import dev.gabrielmumo.demo.security.JwtAuthenticationFilter;
 import dev.gabrielmumo.demo.security.JwtEntryPoint;
-import dev.gabrielmumo.demo.service.UserDetailServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,19 +14,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    private final UserDetailServiceImpl userDetailService;
     private final JwtEntryPoint jwtEntryPoint;
 
     @Autowired
-    public SecurityConfig(UserDetailServiceImpl userDetailService, JwtEntryPoint jwtEntryPoint) {
-        this.userDetailService = userDetailService;
+    public SecurityConfig(JwtEntryPoint jwtEntryPoint) {
         this.jwtEntryPoint = jwtEntryPoint;
     }
 
@@ -41,7 +39,8 @@ public class SecurityConfig {
                     request.requestMatchers("/api/v1/authentication/login").permitAll();
                     request.anyRequest().authenticated();
                 })
-                .httpBasic(withDefaults());
+                .httpBasic(withDefaults())
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -55,4 +54,14 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter();
+    }
 }
+
+
+
+
+
