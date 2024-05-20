@@ -1,6 +1,9 @@
 package dev.gabrielmumo.demo.service;
 
+import dev.gabrielmumo.demo.dto.LoggedDto;
 import dev.gabrielmumo.demo.dto.LoginDto;
+import dev.gabrielmumo.demo.security.JwtManager;
+import dev.gabrielmumo.demo.utils.Constants;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,17 +15,20 @@ import org.springframework.stereotype.Service;
 public class AuthenticationServiceImpl implements AuthenticationService {
 
     private final AuthenticationManager authenticationManager;
+    private final JwtManager jwtManager;
 
     @Autowired
-    public AuthenticationServiceImpl(AuthenticationManager authenticationManager) {
+    public AuthenticationServiceImpl(AuthenticationManager authenticationManager, JwtManager jwtManager) {
         this.authenticationManager = authenticationManager;
+        this.jwtManager = jwtManager;
     }
 
     @Override
-    public void login(LoginDto loginDto) {
+    public LoggedDto login(LoginDto loginDto) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(loginDto.username(), loginDto.password())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
+        return new LoggedDto(jwtManager.generateTkn(authentication), Constants.JWT_TYPE);
     }
 }

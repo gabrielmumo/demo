@@ -1,5 +1,6 @@
 package dev.gabrielmumo.demo.security;
 
+import dev.gabrielmumo.demo.utils.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -49,7 +50,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private Optional<String> getTokenFromRequest(HttpServletRequest request) {
         String authHeader = request.getHeader(AUTHORIZATION);
-        if(StringUtils.hasText(authHeader) && authHeader.startsWith("Bearer ")) {
+        if(StringUtils.hasText(authHeader) && authHeader.startsWith(String.format("%s ", Constants.JWT_TYPE))) {
             return Optional.of(authHeader.substring(7));
         }
         return Optional.empty();
