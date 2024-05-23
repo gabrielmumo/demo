@@ -1,6 +1,7 @@
 package dev.gabrielmumo.demo.security;
 
 import dev.gabrielmumo.demo.utils.Constants;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.function.Function;
 
 @Component
 public class JwtManager {
@@ -33,22 +35,14 @@ public class JwtManager {
                 .compact();
     }
 
-    private Key getTokenKey() {
-        byte[] key = Decoders.BASE64.decode(secret);
-        return Keys.hmacShaKeyFor(key);
-    }
-
     public String getUsername(String token) {
-        return Jwts.parser()
-                .setSigningKey(getTokenKey())
-                .parseClaimsJws(token)
-                .getBody().getSubject();
+        return getClaimsFromToken(token, Claims::getSubject);
     }
 
     public Boolean checkToken(String token) {
         String errorMessage = "";
         try {
-            Jwts.parser().setSigningKey(getTokenKey()).parseClaimsJws(token);
+            getClaimsFromToken(token, Claims::getExpiration);
             return true;
         }  catch (MalformedJwtException e) {
             errorMessage = "Invalid JWT token: " + e.getMessage();
@@ -64,6 +58,21 @@ public class JwtManager {
         // TODO introduce custom exception
         System.err.println(errorMessage);
         return false;
+    }
+
+    private Key getTokenKey() {
+        byte[] key = Decoders.BASE64.decode(secret);
+        return Keys.hmacShaKeyFor(key);
+    }
+
+    private <T> T getClaimsFromToken(String token, Function<Claims, T> claimsResolver) {
+        Claims claims = getClaimsFromToken(token);
+        return claimsResolver.apply(claims);
+    }
+
+    private Claims getClaimsFromToken(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(getTokenKey()).build().parseClaimsJws(token).getBody();
     }
 
 }
