@@ -6,10 +6,13 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.io.Decoders;
+import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
+import java.security.Key;
 import java.util.Date;
 
 @Component
@@ -26,13 +29,18 @@ public class JwtManager {
                 .setSubject(username)
                 .setIssuedAt(current)
                 .setExpiration(expiration)
-                .signWith(SignatureAlgorithm.HS512, secret)
+                .signWith(getTokenKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    private Key getTokenKey() {
+        byte[] key = Decoders.BASE64.decode(secret);
+        return Keys.hmacShaKeyFor(key);
     }
 
     public String getUsername(String token) {
         return Jwts.parser()
-                .setSigningKey(secret)
+                .setSigningKey(getTokenKey())
                 .parseClaimsJws(token)
                 .getBody().getSubject();
     }
@@ -40,7 +48,7 @@ public class JwtManager {
     public Boolean checkToken(String token) {
         String errorMessage = "";
         try {
-            Jwts.parser().setSigningKey(secret).parseClaimsJws(token);
+            Jwts.parser().setSigningKey(getTokenKey()).parseClaimsJws(token);
             return true;
         }  catch (MalformedJwtException e) {
             errorMessage = "Invalid JWT token: " + e.getMessage();
