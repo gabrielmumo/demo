@@ -42,8 +42,7 @@ public class JwtManager {
     public Boolean checkToken(String token) {
         String errorMessage = "";
         try {
-            getClaimsFromToken(token, Claims::getExpiration);
-            return true;
+            return new Date().before(getClaimsFromToken(token, Claims::getExpiration));
         }  catch (MalformedJwtException e) {
             errorMessage = "Invalid JWT token: " + e.getMessage();
         } catch (ExpiredJwtException e) {
