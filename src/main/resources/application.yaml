@@ -21,3 +21,6 @@ dev:
   gabrielmumo:
     security:
       jwt-secret: ${JWT_SECRET}
+      token-type: Bearer
+      expiration-time: 70000
+      refresh-times: 3

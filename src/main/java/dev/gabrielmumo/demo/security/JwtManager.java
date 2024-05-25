@@ -1,6 +1,5 @@
 package dev.gabrielmumo.demo.security;
 
-import dev.gabrielmumo.demo.utils.Constants;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -22,17 +21,17 @@ public class JwtManager {
     @Value("${dev.gabrielmumo.security.jwt-secret}")
     private String secret;
 
-    public String generateTkn(Authentication authentication) {
-        String username = authentication.getName();
-        Date current = new Date();
-        Date expiration = new Date(current.getTime() + Constants.JWT_EXPIRATION_TIME);
+    @Value("${dev.gabrielmumo.security.expiration-time}")
+    private long expirationTime;
+    @Value("${dev.gabrielmumo.security.refresh-times}")
+    private long refreshTimes;
 
-        return Jwts.builder()
-                .setSubject(username)
-                .setIssuedAt(current)
-                .setExpiration(expiration)
-                .signWith(getTokenKey(), SignatureAlgorithm.HS256)
-                .compact();
+    public String generateTkn(Authentication authentication) {
+        return  generateTkn(authentication, expirationTime);
+    }
+
+    public String generateRefreshTkn(Authentication authentication) {
+        return  generateTkn(authentication, expirationTime * refreshTimes);
     }
 
     public String getUsername(String token) {
@@ -72,6 +71,19 @@ public class JwtManager {
     private Claims getClaimsFromToken(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getTokenKey()).build().parseClaimsJws(token).getBody();
+    }
+
+    private String generateTkn(Authentication authentication, long expirationTime) {
+        String username = authentication.getName();
+        Date current = new Date();
+        Date expiration = new Date(current.getTime() + expirationTime);
+
+        return Jwts.builder()
+                .setSubject(username)
+                .setIssuedAt(current)
+                .setExpiration(expiration)
+                .signWith(getTokenKey(), SignatureAlgorithm.HS256)
+                .compact();
     }
 
 }

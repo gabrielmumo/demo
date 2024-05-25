@@ -1,11 +1,11 @@
 package dev.gabrielmumo.demo.security;
 
-import dev.gabrielmumo.demo.utils.Constants;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,6 +26,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Autowired
     private JwtManager jwtManager;
 
+    @Value("${dev.gabrielmumo.security.token-type}")
+    private String tokenType;
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -35,6 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         optToken
                 .filter(jwtManager::checkToken)
                 .ifPresent(token -> {
+                    // TODO Add logic to check refresh token accordingly.
                     var username = jwtManager.getUsername(token);
                     var userDetails = userDetailsService.loadUserByUsername(username);
                     var authToken = new UsernamePasswordAuthenticationToken(
@@ -50,7 +54,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private Optional<String> getTokenFromRequest(HttpServletRequest request) {
         String authHeader = request.getHeader(AUTHORIZATION);
-        if(StringUtils.hasText(authHeader) && authHeader.startsWith(String.format("%s ", Constants.JWT_TYPE))) {
+        if(StringUtils.hasText(authHeader) && authHeader.startsWith(String.format("%s ", tokenType))) {
             return Optional.of(authHeader.substring(7));
         }
         return Optional.empty();

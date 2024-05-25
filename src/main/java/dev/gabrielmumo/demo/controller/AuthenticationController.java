@@ -27,4 +27,10 @@ public class AuthenticationController {
         var logged = authenticationService.login(loginDto);
         return new ResponseEntity<>(logged, HttpStatus.OK);
     }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<String> refresh() {
+        var token = authenticationService.refresh();
+        return new ResponseEntity<>(token, HttpStatus.OK);
+    }
 }
