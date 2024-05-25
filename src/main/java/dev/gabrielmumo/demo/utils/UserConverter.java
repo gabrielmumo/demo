@@ -10,6 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,10 +31,10 @@ public class UserConverter {
         UserEntity entity = new UserEntity();
         entity.setUsername(user.username());
         entity.setPassword(passwordEncoder.encode(user.password()));
-        entity.setRoles(mapToRoles(user.roles()));
+        entity.setRoles(mapToRoles(List.of("USER")));
         return entity;
     }
-    
+
     private List<Role> mapToRoles(List<String> roles) throws BadRequestException {
         if(CollectionUtils.isEmpty(roles)) throw new BadRequestException("Roles are required!");
         return roles.stream().map(roleRepository::findByName)

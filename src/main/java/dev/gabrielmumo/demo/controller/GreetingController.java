@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 @Controller
 @RequestMapping("/api/v1/greetings")
-public class Greeting {
+public class GreetingController {
 
     @GetMapping("/hello")
     public ResponseEntity<String> sayHello() {
