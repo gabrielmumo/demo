@@ -2,6 +2,8 @@ package dev.gabrielmumo.demo.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -15,8 +17,9 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Enumerated(EnumType.STRING)
     @Column(unique = true)
-    private String name;
+    private Roles name;
 
     public Role() {
     }
@@ -29,11 +32,15 @@ public class Role {
         this.id = id;
     }
 
-    public String getName() {
+    public Roles getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(Roles name) {
         this.name = name;
+    }
+
+    public enum Roles {
+        ADMIN, USER
     }
 }

@@ -31,11 +31,11 @@ public class UserConverter {
         UserEntity entity = new UserEntity();
         entity.setUsername(user.username());
         entity.setPassword(passwordEncoder.encode(user.password()));
-        entity.setRoles(mapToRoles(List.of("USER")));
+        entity.setRoles(mapToRoles(List.of(Role.Roles.USER)));
         return entity;
     }
 
-    private List<Role> mapToRoles(List<String> roles) throws BadRequestException {
+    private List<Role> mapToRoles(List<Role.Roles> roles) throws BadRequestException {
         if(CollectionUtils.isEmpty(roles)) throw new BadRequestException("Roles are required!");
         return roles.stream().map(roleRepository::findByName)
                 .filter(Optional::isPresent)

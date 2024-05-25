@@ -41,7 +41,7 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     private List<GrantedAuthority> convertRolesToAuthorities(List<Role> roles) {
         if(CollectionUtils.isEmpty(roles)) return new ArrayList<>();
-        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName()))
+        return roles.stream().map(role -> new SimpleGrantedAuthority(role.getName().toString()))
                 .collect(Collectors.toList());
     }
 }
