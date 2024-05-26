@@ -1,4 +1,4 @@
-package dev.gabrielmumo.demo.exception;
+package dev.gabrielmumo.demo.dto;
 
 import org.springframework.http.HttpStatus;
 
@@ -6,7 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public record ExceptionBody(String message, HttpStatus status, String date) {
+public record ExceptionDto(String message, HttpStatus status, String date) {
 
     public static final class Builder {
         String message;
@@ -17,10 +17,10 @@ public record ExceptionBody(String message, HttpStatus status, String date) {
             this.status = status;
         }
 
-        public ExceptionBody build() {
+        public ExceptionDto build() {
             DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
             Date date = new Date();
-            return new ExceptionBody(message, status, dateFormat.format(date));
+            return new ExceptionDto(message, status, dateFormat.format(date));
         }
     }
 }

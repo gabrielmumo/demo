@@ -3,6 +3,8 @@ package dev.gabrielmumo.demo.service;
 import dev.gabrielmumo.demo.model.Role;
 import dev.gabrielmumo.demo.model.UserEntity;
 import dev.gabrielmumo.demo.repository.UserRepository;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,6 +22,8 @@ import java.util.stream.Collectors;
 @Service
 public class UserDetailServiceImpl implements UserDetailsService {
 
+    private static final Log LOG = LogFactory.getLog(UserDetailServiceImpl.class);
+
     private final UserRepository userRepository;
 
     @Autowired
@@ -30,7 +34,11 @@ public class UserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         UserEntity user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("Username not found " + username));
+                .orElseThrow(() -> {
+                    var message = String.format("Username %s not found", username);
+                    LOG.error(message);
+                    return new UsernameNotFoundException(message);
+                });
 
         return new User(
                 user.getUsername(),

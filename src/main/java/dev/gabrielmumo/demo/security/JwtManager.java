@@ -1,5 +1,6 @@
 package dev.gabrielmumo.demo.security;
 
+import dev.gabrielmumo.demo.exception.UnauthorizedException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -8,6 +9,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -18,6 +22,8 @@ import java.util.function.Function;
 
 @Component
 public class JwtManager {
+
+    private static final Log LOG = LogFactory.getLog(JwtManager.class);
     @Value("${dev.gabrielmumo.security.jwt-secret}")
     private String secret;
 
@@ -39,23 +45,22 @@ public class JwtManager {
     }
 
     public Boolean checkToken(String token) {
-        String errorMessage = "";
         try {
             return new Date().before(getClaimsFromToken(token, Claims::getExpiration));
         }  catch (MalformedJwtException e) {
-            errorMessage = "Invalid JWT token: " + e.getMessage();
+            LOG.error("Invalid JWT token", e);
         } catch (ExpiredJwtException e) {
-            errorMessage = "JWT token is expired: " + e.getMessage();
+            LOG.error("JWT token is expired", e);
         } catch (UnsupportedJwtException e) {
-            errorMessage = "JWT token is unsupported: " + e.getMessage();
+            LOG.error("JWT token is unsupported", e);
         } catch (IllegalArgumentException e) {
-            errorMessage = "JWT claims string is empty: " + e.getMessage();
+            LOG.error("JWT claims string is empty", e);
+        } catch (SignatureException e) {
+            LOG.error("Invalid JWT signature", e);
         } catch (Exception e) {
-            errorMessage = "Unexpected exception: " + e.getMessage();
+            LOG.error("Unexpected exception", e);
         }
-        // TODO introduce custom exception
-        System.err.println(errorMessage);
-        return false;
+        throw new UnauthorizedException("Exception while checking the token");
     }
 
     private Key getTokenKey() {
