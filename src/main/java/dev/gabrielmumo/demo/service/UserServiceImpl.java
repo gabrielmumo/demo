@@ -1,6 +1,6 @@
 package dev.gabrielmumo.demo.service;
 
-import dev.gabrielmumo.demo.dto.UserDto;
+import dev.gabrielmumo.demo.dto.Signup;
 import dev.gabrielmumo.demo.repository.UserRepository;
 import dev.gabrielmumo.demo.utils.UserConverter;
 import org.apache.commons.logging.Log;
@@ -26,14 +26,15 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public Optional<UserDto> signup(UserDto user) throws Exception {
+    public Optional<Signup.Response> signup(Signup.Request user) throws Exception {
         if(userRepository.existsByUsername(user.username())) {
             var message = String.format("Username already exists %s", user.username());
             LOG.error(message);
             throw new BadRequestException(message);
         }
         userRepository.save(userConverter.toEntity(user));
-        // TODO This is returning user password
-        return Optional.of(user);
+        return Optional.of(
+                new Signup.Response(user.username(), user.name(), user.lastname())
+        );
     }
 }

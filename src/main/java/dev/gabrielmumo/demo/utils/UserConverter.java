@@ -1,6 +1,6 @@
 package dev.gabrielmumo.demo.utils;
 
-import dev.gabrielmumo.demo.dto.UserDto;
+import dev.gabrielmumo.demo.dto.Signup;
 import dev.gabrielmumo.demo.model.Role;
 import dev.gabrielmumo.demo.model.User;
 import dev.gabrielmumo.demo.repository.RoleRepository;
@@ -26,7 +26,7 @@ public class UserConverter {
         this.roleRepository = roleRepository;
     }
     
-    public User toEntity(UserDto user) throws BadRequestException {
+    public User toEntity(Signup.Request user) throws BadRequestException {
         User entity = new User();
         entity.setUsername(user.username());
         entity.setPassword(passwordEncoder.encode(user.password()));
