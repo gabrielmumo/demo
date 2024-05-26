@@ -2,7 +2,7 @@ package dev.gabrielmumo.demo.utils;
 
 import dev.gabrielmumo.demo.dto.UserDto;
 import dev.gabrielmumo.demo.model.Role;
-import dev.gabrielmumo.demo.model.UserEntity;
+import dev.gabrielmumo.demo.model.User;
 import dev.gabrielmumo.demo.repository.RoleRepository;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +10,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,8 +26,8 @@ public class UserConverter {
         this.roleRepository = roleRepository;
     }
     
-    public UserEntity toEntity(UserDto user) throws BadRequestException {
-        UserEntity entity = new UserEntity();
+    public User toEntity(UserDto user) throws BadRequestException {
+        User entity = new User();
         entity.setUsername(user.username());
         entity.setPassword(passwordEncoder.encode(user.password()));
         entity.setName(user.name());

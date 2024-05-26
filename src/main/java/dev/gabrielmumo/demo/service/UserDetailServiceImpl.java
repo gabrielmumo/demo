@@ -1,14 +1,13 @@
 package dev.gabrielmumo.demo.service;
 
 import dev.gabrielmumo.demo.model.Role;
-import dev.gabrielmumo.demo.model.UserEntity;
+import dev.gabrielmumo.demo.model.User;
 import dev.gabrielmumo.demo.repository.UserRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -33,14 +32,14 @@ public class UserDetailServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity user = userRepository.findByUsername(username)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> {
                     var message = String.format("Username %s not found", username);
                     LOG.error(message);
                     return new UsernameNotFoundException(message);
                 });
 
-        return new User(
+        return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
                 convertRolesToAuthorities(user.getRoles())
