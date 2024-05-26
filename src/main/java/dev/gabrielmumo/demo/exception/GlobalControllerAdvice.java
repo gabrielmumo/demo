@@ -1,6 +1,6 @@
 package dev.gabrielmumo.demo.exception;
 
-import dev.gabrielmumo.demo.dto.ExceptionDto;
+import dev.gabrielmumo.demo.dto.ExceptionResponse;
 import jakarta.persistence.EntityNotFoundException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -18,27 +18,27 @@ public class GlobalControllerAdvice {
     private static final Log LOG = LogFactory.getLog(GlobalControllerAdvice.class);
 
     @ExceptionHandler({EntityNotFoundException.class})
-    public ResponseEntity<ExceptionDto> handleEntityNotFoundException(EntityNotFoundException e) {
+    public ResponseEntity<ExceptionResponse> handleEntityNotFoundException(EntityNotFoundException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                .body(new ExceptionDto.Builder(handleExceptionMessage(e), HttpStatus.NOT_FOUND).build());
+                .body(new ExceptionResponse.Builder(handleExceptionMessage(e), HttpStatus.NOT_FOUND).build());
     }
 
     @ExceptionHandler({BadRequestException.class, MethodArgumentNotValidException.class})
-    public ResponseEntity<ExceptionDto> handleBadRequestException(Exception e) {
+    public ResponseEntity<ExceptionResponse> handleBadRequestException(Exception e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .body(new ExceptionDto.Builder(handleExceptionMessage(e), HttpStatus.BAD_REQUEST).build());
+                .body(new ExceptionResponse.Builder(handleExceptionMessage(e), HttpStatus.BAD_REQUEST).build());
     }
 
     @ExceptionHandler({BadCredentialsException.class, UnauthorizedException.class})
-    public ResponseEntity<ExceptionDto> handleBadCredentialsException(BadCredentialsException e) {
+    public ResponseEntity<ExceptionResponse> handleBadCredentialsException(BadCredentialsException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                .body(new ExceptionDto.Builder(handleExceptionMessage(e), HttpStatus.UNAUTHORIZED).build());
+                .body(new ExceptionResponse.Builder(handleExceptionMessage(e), HttpStatus.UNAUTHORIZED).build());
     }
 
     @ExceptionHandler({Exception.class})
-    public ResponseEntity<ExceptionDto> handleUnexpectedException(Exception e) {
+    public ResponseEntity<ExceptionResponse> handleUnexpectedException(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .body(new ExceptionDto.Builder(handleExceptionMessage(e), HttpStatus.INTERNAL_SERVER_ERROR).build());
+                .body(new ExceptionResponse.Builder(handleExceptionMessage(e), HttpStatus.INTERNAL_SERVER_ERROR).build());
     }
 
     private String handleExceptionMessage(Exception e) {
