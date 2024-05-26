@@ -31,6 +31,9 @@ public class UserConverter {
         UserEntity entity = new UserEntity();
         entity.setUsername(user.username());
         entity.setPassword(passwordEncoder.encode(user.password()));
+        entity.setName(user.name());
+        entity.setLastname(user.lastname());
+        entity.setBirthdate(user.birthday());
         entity.setRoles(mapToRoles(List.of(Role.Roles.USER)));
         return entity;
     }

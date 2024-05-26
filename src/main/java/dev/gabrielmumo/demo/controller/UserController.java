@@ -2,6 +2,7 @@ package dev.gabrielmumo.demo.controller;
 
 import dev.gabrielmumo.demo.dto.UserDto;
 import dev.gabrielmumo.demo.service.UserService;
+import jakarta.validation.Valid;
 import org.apache.coyote.BadRequestException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,7 @@ public class UserController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<UserDto> signup(@RequestBody UserDto userDto) throws Exception {
+    public ResponseEntity<UserDto> signup(@Valid @RequestBody UserDto userDto) throws Exception {
         Optional<UserDto> user = userService.signup(userDto);
         return user.map(saved -> new ResponseEntity<>(saved, HttpStatus.CREATED))
                 .orElseThrow();

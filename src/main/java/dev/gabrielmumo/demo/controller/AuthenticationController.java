@@ -3,6 +3,7 @@ package dev.gabrielmumo.demo.controller;
 import dev.gabrielmumo.demo.dto.LoggedDto;
 import dev.gabrielmumo.demo.dto.LoginDto;
 import dev.gabrielmumo.demo.service.AuthenticationService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,7 +24,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoggedDto> login(@RequestBody LoginDto loginDto) {
+    public ResponseEntity<LoggedDto> login(@Valid @RequestBody LoginDto loginDto) {
         var logged = authenticationService.login(loginDto);
         return new ResponseEntity<>(logged, HttpStatus.OK);
     }

@@ -33,6 +33,7 @@ public class UserServiceImpl implements UserService{
             throw new BadRequestException(message);
         }
         userRepository.save(userConverter.toEntity(user));
+        // TODO This is returning user password
         return Optional.of(user);
     }
 }
