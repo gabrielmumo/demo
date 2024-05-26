@@ -35,6 +35,7 @@ public class SecurityConfig {
                 .exceptionHandling(request -> request.authenticationEntryPoint(jwtEntryPoint))
                 .sessionManagement(request -> request.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(request -> {
+                    request.requestMatchers("/actuator/**").permitAll();
                     request.requestMatchers("/api/v1/users/signup").permitAll();
                     request.requestMatchers("/api/v1/authentication/login").permitAll();
                     request.anyRequest().authenticated();

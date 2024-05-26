@@ -17,6 +17,18 @@ spring:
       hibernate:
         format_sql: true
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: info,health,liveness,readiness
+  endpoint:
+    health:
+      show-details: always
+      enabled: true
+      probes:
+        enabled: true
+
 dev:
   gabrielmumo:
     security:
