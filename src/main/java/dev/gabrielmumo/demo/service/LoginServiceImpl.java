@@ -1,7 +1,6 @@
 package dev.gabrielmumo.demo.service;
 
-import dev.gabrielmumo.demo.dto.LoggedDto;
-import dev.gabrielmumo.demo.dto.LoginDto;
+import dev.gabrielmumo.demo.dto.Login;
 import dev.gabrielmumo.demo.security.JwtManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,8 +10,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
-public class AuthenticationServiceImpl implements AuthenticationService {
+public class LoginServiceImpl implements LoginService {
 
     private final AuthenticationManager authenticationManager;
     private final JwtManager jwtManager;
@@ -21,21 +22,23 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private String tokenType;
 
     @Autowired
-    public AuthenticationServiceImpl(AuthenticationManager authenticationManager, JwtManager jwtManager) {
+    public LoginServiceImpl(AuthenticationManager authenticationManager, JwtManager jwtManager) {
         this.authenticationManager = authenticationManager;
         this.jwtManager = jwtManager;
     }
 
     @Override
-    public LoggedDto login(LoginDto loginDto) {
+    public Optional<Login.Response> login(Login.Request login) {
         Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(loginDto.username(), loginDto.password())
+                new UsernamePasswordAuthenticationToken(login.username(), login.password())
         );
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return new LoggedDto(
-                jwtManager.generateTkn(authentication),
-                jwtManager.generateRefreshTkn(authentication),
-                tokenType
+        return Optional.of(
+                new Login.Response(
+                        jwtManager.generateTkn(authentication),
+                        jwtManager.generateRefreshTkn(authentication),
+                        tokenType
+                )
         );
     }
 

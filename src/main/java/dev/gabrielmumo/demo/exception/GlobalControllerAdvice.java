@@ -29,7 +29,7 @@ public class GlobalControllerAdvice {
                 .body(new ExceptionDto.Builder(handleExceptionMessage(e), HttpStatus.BAD_REQUEST).build());
     }
 
-    @ExceptionHandler({BadCredentialsException.class})
+    @ExceptionHandler({BadCredentialsException.class, UnauthorizedException.class})
     public ResponseEntity<ExceptionDto> handleBadCredentialsException(BadCredentialsException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
                 .body(new ExceptionDto.Builder(handleExceptionMessage(e), HttpStatus.UNAUTHORIZED).build());
