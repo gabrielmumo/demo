@@ -28,6 +28,7 @@ public class Signup {
 
             @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
             @JsonFormat(pattern = "yyyy-MM-dd")
+            @NotBlank(message = "Birthday is required")
             Date birthday){}
 
     public record Response(String username, String name, String lastname){}
