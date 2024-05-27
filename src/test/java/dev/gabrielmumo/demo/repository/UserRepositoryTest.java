@@ -89,10 +89,17 @@ class UserRepositoryTest {
     }
 
     @Test
-    public void shouldExistUserWithGivenUsername() {
+    public void shouldConfirmUserExistsByUsername() {
         Boolean userExists = userRepository.existsByUsername(USERNAME);
 
         assertTrue(userExists, "User should exist");
+    }
+
+    @Test
+    public void shouldNotConfirmUserExistsByUsername() {
+        Boolean userExists = userRepository.existsByUsername("notexisting@gmail.com");
+
+        assertFalse(userExists, "User should not exist");
     }
 
     @Test
@@ -104,11 +111,25 @@ class UserRepositoryTest {
     }
 
     @Test
+    public void shouldNotFindNotStoredUser() {
+        var foundUser = userRepository.findById(1000);
+
+        assertFalse(foundUser.isPresent(), "Should not find not stored user");
+    }
+
+    @Test
     public void shouldFindUserByUsername() {
         var foundUser = userRepository.findByUsername(USERNAME);
 
         assertTrue(foundUser.isPresent(), "Should find setup user");
         assertEquals(USERNAME, foundUser.get().getUsername(), "Setup user and found user should be equal");
+    }
+
+    @Test
+    public void shouldNotFindUserWithNotStoredUsername() {
+        var foundUser = userRepository.findByUsername("notexisting@gmail.com");
+
+        assertFalse(foundUser.isPresent(), "Should not find not stored user");
     }
 
     @Test

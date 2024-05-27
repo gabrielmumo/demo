@@ -82,6 +82,15 @@ class RoleRepositoryTest {
     }
 
     @Test
+    public void shouldNotFindWithNoExistingId() {
+        // When
+        var foundRole = roleRepository.findById(1000);
+
+        // Then
+        assertFalse(foundRole.isPresent(), "Should find not stored role");
+    }
+
+    @Test
     public void shouldFindByName() {
         // When
         var foundRole = roleRepository.findByName(Role.Roles.ADMIN);
@@ -89,6 +98,15 @@ class RoleRepositoryTest {
         // Then
         assertTrue(foundRole.isPresent(), "Should find setup role by name");
         assertEquals(1, foundRole.get().getId(), "Setup role and found role should be equal");
+    }
+
+    @Test
+    public void shouldNotFindWithNotStoredName() {
+        // When
+        var foundRole = roleRepository.findByName(Role.Roles.USER);
+
+        // Then
+        assertFalse(foundRole.isPresent(), "Should find not stored role");
     }
 
     @Test
