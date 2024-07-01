@@ -36,3 +36,5 @@ dev:
       token-type: Bearer
       expiration-time: 70000
       refresh-times: 3
+    utils:
+      youtube-url-pattern: http(?:s)?:\/\/(?:m.)?(?:www\.)?youtu(?:\.be\/|(?:be-nocookie|be)\.com\/(?:watch|[\w]+\?(?:feature=[\w]+.[\w]+\&)?v=|v\/|e\/|embed\/|live\/|shorts\/|user\/(?:[\w#]+\/)+))([^&#?\n]+)
